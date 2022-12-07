@@ -8,25 +8,23 @@ const { EFFECTS, data, videoFps } = require("./consts")
 
 const { saveFrame, createVideo, combineAnimations } = require("./videoUtils")
 
-const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {  
-
+const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
   const animationType = {
-    leftToRight: (el, duration) => { 
-      
-      const layersAttributes = el.map((element) => {       
+    leftToRight: (el, duration) => {
+      const layersAttributes = el.map((element) => {
         return element["attrs"]
-      })    
+      })
 
-      //get last element from array  
-      const nextLayerData = layersAttributes.at(-1)   
+      //get last element from array
+      const nextLayerData = layersAttributes.at(-1)
 
       let time = duration
       !time ? (time = 8) : (time = duration)
-      
+
       if (nextLayerData !== undefined) {
         var initX = nextLayerData.x
         var initY = nextLayerData.y
-      }     
+      }
 
       el.position({
         x: 0,
@@ -34,7 +32,7 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
       })
 
       el.to({
-        x: initX,       
+        x: initX,
         duration: time,
       })
     },
@@ -484,7 +482,7 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
     },
     image: (layerData) => {
       let imgUrl = layerData.meta.value
-      // "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0tk7Wlyh7QyNhcMUhvwQ5mn1keNtI88IOEA&usqp=CAU"
+
       let el = Konva.Image.fromURL(imgUrl, (el) => {
         el.setAttrs({
           width: layerData.dimentions.width,
@@ -525,6 +523,28 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
   // animationType[textRandomEffect](stage.find("." + "textLayer"))
 }
 
+const rendBackground = (image, imageObj, group, fadeImage, layer, data) => {
+  image.image(imageObj) // set the Konva image content to the html image content
+
+  // set the Konva image attributes as needed
+  image.setAttrs({
+    draggable: false,
+    x: data.frameGroup.x,
+    y: data.frameGroup.y,
+    width: data.frameGroup.width,
+    height: data.frameGroup.height,
+  })
+
+  group.add(image) // add the image to the frame group
+
+  // make a clone of the image to be used as the fade image.
+  fadeImage = image.clone({
+    draggable: false,
+    opacity: data.fadeImage.opacity,
+  })
+  layer.add(fadeImage)
+}
+
 const rendVideo = async ({ outputDir, output }) => {
   const canvasSize = stateJson.layers.mainState.canvasSize
 
@@ -534,101 +554,71 @@ const rendVideo = async ({ outputDir, output }) => {
   })
 
   const start = Date.now()
-  const frames = layersDataArr.length * videoFps
 
-  try {
-    let layer = new Konva.Layer({})
-    let group = new Konva.Group({ clip: data.frameGroup })
-    let image = new Konva.Image({ draggable: false })
-    let fadeImage = null
+  const frames = 5 * videoFps
 
-    const backgroundLayerData = layersDataArr.find((templateLayers) => {
-      return templateLayers.placeholder.type === "Background"
-    })
+  let layer = new Konva.Layer({})
+  let group = new Konva.Group({ clip: data.frameGroup })
+  let image = new Konva.Image({ draggable: false })
+  let fadeImage = null
 
-    //backgroundLayerData.meta.value --> background Image URL
-    let imageObj = await loadImage(backgroundLayerData.meta.value)
-    stage.add(layer)
+  const backgroundLayerData = layersDataArr.find((templateLayers) => {
+    return templateLayers.placeholder.type === "Background"
+  })
 
-    // Use the html image object to load the image and handle when laoded.
-    const rendBackground = (image, imageObj, group, fadeImage, layer, data) => {
-      image.image(imageObj) // set the Konva image content to the html image content
+  //backgroundLayerData.meta.value --> background Image URL
+  let imageObj = await loadImage(backgroundLayerData.meta.value)
+  stage.add(layer)
 
-      // set the Konva image attributes as needed
-      image.setAttrs({
-        // image: video,
-        draggable: false,
-        x: data.frameGroup.x,
-        y: data.frameGroup.y,
-        width: data.frameGroup.width,
-        height: data.frameGroup.height,
-      })
+  // Use the html image object to load the image and handle when laoded.
+  rendBackground(image, imageObj, group, fadeImage, layer, data)
 
-      group.add(image) // add the image to the frame group
+  const rendLayers = async (stage, layer, EFFECTS, layersDataArr) => {
+    //ms ---> delay-i pakagci tivna het talis
 
-      // make a clone of the image to be used as the fade image.
-      fadeImage = image.clone({
-        draggable: false,
-        opacity: data.fadeImage.opacity,
-      })
-      layer.add(fadeImage)
+    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    let index = 0
+    while (index < layersDataArr.length) {
+      // Wait to do this one until a delay after the last one
+      console.log("out")
+      
+
+      rendLayersEffect(stage, layer, EFFECTS, layersDataArr[index])
+      // if (index > 0) {
+      //   console.log("in")
+      //   await delay(1000)
+      // }
+
+      // Do this one    
+      ++index
     }
-    rendBackground(image, imageObj, group, fadeImage, layer, data)
-
-    const rendLayers = (stage, layer, EFFECTS, layersDataArr) => {
-      // const txtLayersData = layersDataArr.find((templateLayers) => {
-      //   return templateLayers.type === "TEXT_LAYER"
-      // })
-      // const txtLayersArr = txtLayersData.meta.value
-
-      //ms ---> delay-i pakagci tivna het talis
-      // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-      // ;(async () => {
-      //   let index = 0
-      //   while (index < layersDataArr.length) {
-      //     // Wait to do this one until a delay after the last one
-      //     if (index > 0) {
-      //       await delay(5000)
-      //     }
-      //     // Do this one
-      //     // console.log("layersDataArr[index]----------599",layersDataArr[index])
-      //     rendLayersEffect(stage, layer, EFFECTS, layersDataArr[index])
-      //     ++index
-      //   }
-      // })()
-
-      var i = 0
-      var interval = setInterval(() => {
-        var layerObj = layersDataArr[i]
-        // do whatever
-        rendLayersEffect(stage, layer, EFFECTS, layerObj)
-        i++
-        if (i === layersDataArr.length) clearInterval(interval)
-      }, 3000)
-    }
-
-    const animate = combineAnimations(
-      rendLayers(stage, layer, EFFECTS, layersDataArr)
-    )
-
-    console.log("generating frames...")
-
-    let frame = 0
-    while (frame < frames) {
-      animate(frame)
-      layer.draw()
-
-      await saveFrame({ stage, outputDir, frame })
-
-      if ((frame + 1) % videoFps === 0) {
-        console.log(`rendered ${(frame + 1) / videoFps} second(s)`)
-      }
-      ++frame
-    }
-  } finally {
-    stage.destroy()
   }
+
+  const some = await rendLayers(stage, layer, EFFECTS, layersDataArr)
+
+  const animate = combineAnimations(some)
+
+  console.log("generating frames...")
+
+  let frame = 0
+  while (frame < frames) {
+    
+    animate(frame)   
+
+
+    layer.draw()
+
+    await saveFrame({ stage, outputDir, frame })
+
+    if ((frame + 1) % videoFps === 0) {
+      console.log(`rendered ${(frame + 1) / videoFps} second(s)`)
+    }
+    ++frame
+  }
+
+  // stage.destroy()
+
   console.log("creating video")
   createVideo({ fps: videoFps, outputDir, output })
   const time = Date.now() - start
