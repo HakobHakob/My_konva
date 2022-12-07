@@ -13,32 +13,30 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
   const animationType = {
     leftToRight: (el, duration) => { 
       
-      const some = el.forEach(element => {
-        console.log("ellllllllllllll---16", element)
-      });
+      const layersAttributes = el.map((element) => {       
+        return element["attrs"]
+      })    
 
-
+      //get last element from array  
+      const nextLayerData = layersAttributes.at(-1)   
 
       let time = duration
-
       !time ? (time = 8) : (time = duration)
+      
+      if (nextLayerData !== undefined) {
+        var initX = nextLayerData.x
+        var initY = nextLayerData.y
+      }     
 
-      // If any operand of && operator is falsy (false, 0, null, undefined, NaN, "") then duration will be assigned the first falsy value.
-      // If all operands of && operator is not falsy, then the last operand will be assigned to duration.
-      // !duration && (duration = 10)
+      el.position({
+        x: 0,
+        y: initY,
+      })
 
-      // let initX = el.attrs.x
-      // let initY = el.attrs.y
-
-    //   el.position({
-    //     x: 0,
-    //     y: stage.height() / 2,
-    //   })
-
-    //   el.to({
-    //     x: initX,
-    //     duration: time,
-    //   })
+      el.to({
+        x: initX,       
+        duration: time,
+      })
     },
 
     rotateExitRight: (el) => {
