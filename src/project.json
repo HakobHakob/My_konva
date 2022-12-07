@@ -1,0 +1,620 @@
+{
+  "ui": {
+    "layout": "Original",
+    "lightMode": true,
+    "ownPhotos": {
+      "list": [],
+      "page": -1,
+      "order": "date",
+      "orderBy": "DESC",
+      "isLoading": false
+    },
+    "saving2Db": false,
+    "canvasZoom": 0.5,
+    "fontsLoaded": false,
+    "stockPhotos": { "list": [], "page": 1, "search": "", "isLoading": false },
+    "isPreviewMode": false,
+    "stickerImages": { "list": [], "page": 1, "isLoading": false },
+    "picturesListMode": null,
+    "projectFontsLoaded": true
+  },
+  "async": { "syncedWithDb": true },
+  "fonts": [],
+  "layers": {
+    "history": [],
+    "mainState": {
+      "data": [
+        {
+          "id": 22282,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://static.essemem.com/file-manager/63371bfc0ef5d.jpg",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 1,
+          "title": "image 1",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 1080,
+            "coords": { "x": 0, "y": 0 },
+            "height": 1080,
+            "cropInfo": { "x": 0, "y": 0, "width": 1080, "height": 1080 },
+            "rotation": 0,
+            "originalWidth": 430,
+            "originalHeight": 430
+          },
+          "visibility": true,
+          "placeholder": {
+            "type": "Background",
+            "layerId": "",
+            "placement": "fill"
+          },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42772,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://uf-2022.essemem.com/%22%22%2Ca9fa3884-d341-4768-9-flower.jpg",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 2,
+          "title": "image 2",
+          "border": {
+            "type": "solid",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [810, 810, 810, 810]
+            },
+            "width": 0,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 629,
+            "coords": { "x": 236, "y": 173 },
+            "height": 744,
+            "cropInfo": { "x": 0, "y": 0, "width": 629, "height": 744 },
+            "rotation": 0,
+            "originalWidth": 200,
+            "originalHeight": 200
+          },
+          "visibility": true,
+          "placeholder": {
+            "type": "Image",
+            "layerId": "",
+            "placement": "fill",
+            "isReplaced": true
+          },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42773,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://static.essemem.com/file-manager/63371c698ebb1.png",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 3,
+          "title": "image 3",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 119,
+            "coords": { "x": 242, "y": 716 },
+            "height": 118,
+            "cropInfo": { "x": 0, "y": 0, "width": 119, "height": 118 },
+            "rotation": 0,
+            "originalWidth": 119,
+            "originalHeight": 118
+          },
+          "visibility": true,
+          "placeholder": { "type": "", "layerId": "", "placement": "fill" },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42774,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://static.essemem.com/file-manager/63371c9339e87.png",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 4,
+          "title": "image 4",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 249,
+            "coords": { "x": 44, "y": 426 },
+            "height": 257,
+            "cropInfo": { "x": 0, "y": 0, "width": 249, "height": 257 },
+            "rotation": 0,
+            "originalWidth": 249,
+            "originalHeight": 257
+          },
+          "visibility": true,
+          "placeholder": { "type": "", "layerId": "", "placement": "fill" },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42775,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://static.essemem.com/file-manager/63371cb617dc1.png",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 5,
+          "title": "image 5",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 263,
+            "coords": { "x": 719, "y": 609 },
+            "height": 267,
+            "cropInfo": { "x": 0, "y": 0, "width": 263, "height": 267 },
+            "rotation": 0,
+            "originalWidth": 263,
+            "originalHeight": 267
+          },
+          "visibility": true,
+          "placeholder": { "type": "", "layerId": "", "placement": "fill" },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42776,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "type": "ImgType",
+            "value": "https://uf-2022.essemem.com/%22%22%2Cba592cdc-393c-4d12-b-flowerlogo.jpg",
+            "colorAdjustments": {
+              "blur": 0,
+              "invert": 0,
+              "warmth": 0,
+              "shadows": 0,
+              "contrast": 100,
+              "exposure": 0,
+              "saturate": 100,
+              "grayscale": 0,
+              "brightness": 100,
+              "brilliance": 0,
+              "highlights": 0
+            }
+          },
+          "type": "IMAGE_LAYER",
+          "order": 6,
+          "title": "image 6",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "placement": "",
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 186,
+            "coords": { "x": 461, "y": 58 },
+            "height": 124,
+            "cropInfo": { "x": 0, "y": 0, "width": 186, "height": 124 },
+            "rotation": 0,
+            "originalWidth": 200,
+            "originalHeight": 200
+          },
+          "visibility": true,
+          "placeholder": {
+            "type": "Logo",
+            "layerId": "",
+            "placement": "fit",
+            "isReplaced": true
+          },
+          "parentLayerId": "",
+          "relativePosition": ""
+        },
+        {
+          "id": 42777,
+          "flip": { "h": false, "v": false },
+          "meta": {
+            "color": {
+              "type": "solid",
+              "solid": { "color": "#000000" },
+              "gradient": {
+                "type": "linear",
+                "colors": [
+                  { "stop": 24, "color": "#fdbb2d" },
+                  { "stop": 45, "color": "#22c1c3" },
+                  { "stop": 57, "color": "#000000" },
+                  { "stop": 72, "color": "#fa0000" }
+                ],
+                "degree": 149
+              }
+            },
+            "value": ["Text Effect"],
+            "fontId": "805",
+            "stroke": {
+              "size": 0,
+              "color": {
+                "type": "solid",
+                "solid": { "color": "#000000" },
+                "gradient": {
+                  "type": "linear",
+                  "colors": [
+                    { "stop": 50, "color": "" },
+                    { "stop": 100, "color": "" }
+                  ],
+                  "degree": 0
+                }
+              }
+            },
+            "padding": [17, 17, 17, 17],
+            "fontSize": "60.2854",
+            "fontStyle": "normal",
+            "fontFamily": "Roboto",
+            "fontWeight": "700",
+            "lineHeight": 1.2,
+            "letterSpacing": 0,
+            "backgroundColor": {
+              "type": "",
+              "solid": { "color": "#ff8080" },
+              "gradient": {
+                "type": "linear",
+                "colors": [
+                  { "stop": 50, "color": "" },
+                  { "stop": 100, "color": "" }
+                ],
+                "degree": 0
+              }
+            },
+            "horizontalAlign": "center"
+          },
+          "type": "TEXT_LAYER",
+          "order": 7,
+          "title": "Amazing ...",
+          "border": {
+            "type": "",
+            "solid": {
+              "color": "#333333",
+              "style": "solid",
+              "radius": [0, 0, 0, 0]
+            },
+            "width": 20,
+            "gradient": {
+              "type": "linear",
+              "colors": [
+                { "stop": 50, "color": "#333333" },
+                { "stop": 100, "color": "#ffffff" }
+              ],
+              "degree": 0
+            }
+          },
+          "shadow": {
+            "x": 0,
+            "y": 0,
+            "blur": 50,
+            "color": "#333333",
+            "spread": 0,
+            "distance": 0,
+            "direction": null,
+            "isEnabled": false
+          },
+          "movable": true,
+          "opacity": 1,
+          "layerType": "OrdinaryLayer",
+          "constrains": {
+            "movable": true,
+            "draggable": true,
+            "resizable": true,
+            "rotatable": true,
+            "selection": true
+          },
+          "dimentions": {
+            "width": 889,
+            "coords": { "x": 108, "y": 913.188 },
+            "height": 106.344,
+            "cropInfo": { "x": 0, "y": 0, "width": 889, "height": 107 },
+            "maxWidth": 889,
+            "rotation": 0,
+            "originalWidth": 610,
+            "originalHeight": 45
+          },
+          "visibility": true,
+          "placeholder": {
+            "type": "Title",
+            "layerId": "",
+            "placement": "fill",
+            "isReplaced": true
+          },
+          "parentLayerId": "",
+          "relativePosition": ""
+        }
+      ],
+      "canvasSize": { "width": 1080, "height": 1080 },
+      "selectedLayers": [22282],
+      "multiselectedWrapper": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "rotation": 0
+      }
+    },
+    "historyPointer": 1
+  }
+}
