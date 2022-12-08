@@ -16,15 +16,17 @@ const frameNameLength = 5
 // }
 
 // const makeAnimation = ( callback,{ startFrame, duration }) => {
+ 
 //   return (frame) => {   
 //     const thisFrame = frame - startFrame
-//     if (thisFrame > 0 && thisFrame <= duration) {
+    
+//     if (thisFrame >= 0 && thisFrame <= duration) {
 //       callback(thisFrame / duration)
 //     }
 //   }
 // }
 
-const combineAnimations = (...animations) => {
+const combineAnimations = (...animations) => {  
   return (frame) => {
     for (const animation of animations) {
       if (animation) {

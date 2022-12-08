@@ -8,7 +8,29 @@ const { EFFECTS, data, videoFps } = require("./consts")
 
 const { saveFrame, createVideo, combineAnimations } = require("./videoUtils")
 
-const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
+const rendBackground = (image, imageObj, group, fadeImage, layer, canvasSize,canvasCoords) => {
+  image.image(imageObj) // set the Konva image content to the html image content
+
+  // set the Konva image attributes as needed
+  image.setAttrs({
+    draggable: false,
+    x: canvasCoords.x,
+    y: canvasCoords.y,
+    width: canvasSize.width,
+    height: canvasSize.height,
+  })
+
+  group.add(image) // add the image to the frame group
+
+  // make a clone of the image to be used as the fade image.
+  fadeImage = image.clone({
+    draggable: false,
+    opacity: 1,
+  })
+  layer.add(fadeImage)
+}
+
+const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
   const animationType = {
     leftToRight: (el, duration) => {
       const layersAttributes = el.map((element) => {
@@ -18,13 +40,13 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
       //get last element from array
       const nextLayerData = layersAttributes.at(-1)
 
-      let time = duration
-      !time ? (time = 8) : (time = duration)
-
       if (nextLayerData !== undefined) {
         var initX = nextLayerData.x
         var initY = nextLayerData.y
-      }
+      } 
+
+      let time = duration
+      !time ? (time = 8) : (time = duration)         
 
       el.position({
         x: 0,
@@ -38,8 +60,25 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
     },
 
     rotateExitRight: (el) => {
-      let initX = el[0].attrs.x
-      let initY = el[0].attrs.y
+
+      const layersAttributes = el.map((element) => {
+        return element["attrs"]
+      })
+
+      //get last element from array
+      const nextLayerData = layersAttributes.at(-1)
+
+      if (nextLayerData !== undefined) {
+        var initX = nextLayerData.x
+        var initY = nextLayerData.y
+      } 
+
+
+
+      // let initX = el[0].attrs.x
+      // let initY = el[0].attrs.y
+
+
       let animSpeed = 0.05
       let animInit = false
 
@@ -457,11 +496,12 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
   }
 
   const itemType = {
-    textLayer: (layerData) => {
+    textLayer: (layerData) => {  
+      console.log("text",layerData.meta.value)
       const FONT_SIZE = parseInt(layerData.meta.fontSize)
       let el = new Konva.Text({
-        // width: layerData.dimentions.width,
-        // height: layerData.dimentions.height,
+        width: layerData.dimentions.width,
+        height: layerData.dimentions.height,
         x: layerData.dimentions.coords.x,
         y: layerData.dimentions.coords.y,
         text: layerData.meta.value,
@@ -481,6 +521,7 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
       layer.draw()
     },
     image: (layerData) => {
+      console.log("image",layerData.meta.value)
       let imgUrl = layerData.meta.value
 
       let el = Konva.Image.fromURL(imgUrl, (el) => {
@@ -505,48 +546,31 @@ const rendLayersEffect = (stage, layer, EFFECTS, layerData) => {
 
   const randomEffect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)]
 
-  if (layerData.type === "TEXT_LAYER") {
-    itemType["textLayer"](layerData)
-    animationType[randomEffect](stage.find("." + "textLayer"))
-  }
+  layersDataArr.forEach((layerData) => {
 
-  if (
-    layerData.type === "IMAGE_LAYER" &&
-    layerData.placeholder.type !== "Background"
-  ) {
-    itemType["image"](layerData)
-    animationType[randomEffect](stage.find("." + "image"))
-  }
+    if (layerData.type === "TEXT_LAYER") {
+      itemType["textLayer"](layerData)
+      animationType[randomEffect](stage.find("." + "textLayer"))
+    }
 
-  //To select shapes by name with Konva, we can use the find() method using the . selector.
+    if (
+      layerData.type === "IMAGE_LAYER" &&
+      layerData.placeholder.type !== "Background"
+    ) {
+      itemType["image"](layerData)
+      animationType[randomEffect](stage.find("." + "image"))
+    }
+    
+  })
+
+  //To select shapes by name with "image", we can use the find() method using the . selector.
   // The find() method returns an array of nodes that match the selector string.
   // animationType[textRandomEffect](stage.find("." + "textLayer"))
 }
 
-const rendBackground = (image, imageObj, group, fadeImage, layer, data) => {
-  image.image(imageObj) // set the Konva image content to the html image content
-
-  // set the Konva image attributes as needed
-  image.setAttrs({
-    draggable: false,
-    x: data.frameGroup.x,
-    y: data.frameGroup.y,
-    width: data.frameGroup.width,
-    height: data.frameGroup.height,
-  })
-
-  group.add(image) // add the image to the frame group
-
-  // make a clone of the image to be used as the fade image.
-  fadeImage = image.clone({
-    draggable: false,
-    opacity: data.fadeImage.opacity,
-  })
-  layer.add(fadeImage)
-}
-
 const rendVideo = async ({ outputDir, output }) => {
   const canvasSize = stateJson.layers.mainState.canvasSize
+  const canvasCoords = stateJson.layers.mainState.multiselectedWrapper
 
   const stage = new Konva.Stage({
     width: canvasSize.width,
@@ -570,42 +594,17 @@ const rendVideo = async ({ outputDir, output }) => {
   let imageObj = await loadImage(backgroundLayerData.meta.value)
   stage.add(layer)
 
-  // Use the html image object to load the image and handle when laoded.
-  rendBackground(image, imageObj, group, fadeImage, layer, data)
-
-  const rendLayers = async (stage, layer, EFFECTS, layersDataArr) => {
-    //ms ---> delay-i pakagci tivna het talis
-
-    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-    let index = 0
-    while (index < layersDataArr.length) {
-      // Wait to do this one until a delay after the last one
-      console.log("out")
-      
-
-      rendLayersEffect(stage, layer, EFFECTS, layersDataArr[index])
-      // if (index > 0) {
-      //   console.log("in")
-      //   await delay(1000)
-      // }
-
-      // Do this one    
-      ++index
-    }
-  }
-
-  const some = await rendLayers(stage, layer, EFFECTS, layersDataArr)
-
-  const animate = combineAnimations(some)
+  const animate = combineAnimations(
+    // Use the html image object to load the image and handle when laoded.
+    rendBackground(image, imageObj, group, fadeImage, layer, canvasSize,canvasCoords),
+    await rendLayersEffect(stage, layer, EFFECTS, layersDataArr)
+  )
 
   console.log("generating frames...")
 
   let frame = 0
   while (frame < frames) {
-    
-    animate(frame)   
-
+    animate(frame)
 
     layer.draw()
 

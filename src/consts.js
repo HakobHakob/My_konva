@@ -1,6 +1,6 @@
 const EFFECTS = [
-  "leftToRight",
-  // "rotateExitRight",
+  // "leftToRight",
+  "rotateExitRight",
   // "fadeInItem",
   // "spellTowardsTheScreen",
   // "shrinkToCanvas",
