@@ -4,11 +4,19 @@ const { loadImage } = require("canvas")
 const stateJson = require("./project.json")
 const layersDataArr = stateJson.layers.mainState.data
 
-const { EFFECTS, data, videoFps } = require("./consts")
+const { EFFECTS, videoFps } = require("./consts")
 
-const { saveFrame, createVideo, combineAnimations } = require("./videoUtils")
+const { saveFrame, createVideo,layerEffects, combineAnimations } = require("./videoUtils")
 
-const rendBackground = (image, imageObj, group, fadeImage, layer, canvasSize,canvasCoords) => {
+const rendBackground = (
+  image,
+  imageObj,
+  group,
+  fadeImage,
+  layer,
+  canvasSize,
+  canvasCoords
+) => {
   image.image(imageObj) // set the Konva image content to the html image content
 
   // set the Konva image attributes as needed
@@ -38,56 +46,47 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
       })
 
       //get last element from array
-      const nextLayerData = layersAttributes.at(-1)
+      const lastLayerData = layersAttributes.at(-1)
 
-      if (nextLayerData !== undefined) {
-        var initX = nextLayerData.x
-        var initY = nextLayerData.y
-      } 
+      if (lastLayerData !== undefined) {
+        var initX = lastLayerData.x
+        var initY = lastLayerData.y
+      }
 
       let time = duration
-      !time ? (time = 8) : (time = duration)         
+      !time ? (time = 8) : (time = duration)
 
       el.position({
-        x: 0,
-        y: initY,
+        x: -stage.width(),
+        y: 0,
       })
 
       el.to({
         x: initX,
+        y:initY,
         duration: time,
       })
     },
 
     rotateExitRight: (el) => {
-
       const layersAttributes = el.map((element) => {
         return element["attrs"]
       })
+      const lastLayerData = layersAttributes.at(-1)
 
-      //get last element from array
-      const nextLayerData = layersAttributes.at(-1)
-
-      if (nextLayerData !== undefined) {
-        var initX = nextLayerData.x
-        var initY = nextLayerData.y
-      } 
-
-
-
-      // let initX = el[0].attrs.x
-      // let initY = el[0].attrs.y
-
-
-      let animSpeed = 0.05
+      if (lastLayerData !== undefined) {
+        var initX = lastLayerData.x
+        var initY = lastLayerData.y
+      }
+      let animSpeed = 0.1
       let animInit = false
 
       let animRotate = new Konva.Animation((frame) => {
-        el.rotation(frame.time % 360)
+        el.rotation((frame.time * animSpeed) % 360)
       }, layer)
 
       let animMove = new Konva.Animation((frame) => {
-        el.x(initX + frame.time * animSpeed)
+        el.x(initX + frame.time / 10)
       }, layer)
 
       animInit = true
@@ -102,26 +101,32 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
           y: initY,
           rotation: 0,
         })
-      }, 20000)
+      }, 15000)
     },
 
-    fadeInItem: (el, duration) => {
-      !duration && (duration = 2)
-      let zero = parseInt(0)
-      let one = 1
-      // let initItemProps = el.attrs
-      el.opacity(zero)
+    easingLeftToRight: (el, duration) => {
+      !duration && (duration = 10)
+
+      let initX = el[0].attrs.x
+      let initY = el[0].attrs.y
+
+      el.position({
+        x: -el[0].attrs.x,
+        y: initY,
+      })
 
       el.tween = new Konva.Tween({
-        node: el,
+        node: el[0],
+        x: initX,
+        easing: Konva.Easings.StrongEaseOut,
         duration: duration,
-        opacity: one,
       })
+
       el.tween.play()
     },
 
     spellTowardsTheScreen: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 20)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
@@ -130,7 +135,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
         scaleX: 12,
         scaleY: 12,
         opacity: 0,
-        onFinish() {
+        onFinish: function () {
           el[0].tween.reset()
         },
       })
@@ -139,7 +144,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
     },
 
     shrinkToCanvas: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 20)
 
       el[0].scale({
         x: 12,
@@ -159,13 +164,24 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
     },
 
     opacityFadeOut: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 15)
+
+      let initX = el[0].attrs.x
+      let initY = el[0].attrs.y
+
+      el[0].position({
+        x: initX,
+        y: initY,
+      })
 
       el[0].tween = new Konva.Tween({
         node: el[0],
+        easing: Konva.Easings.EaseOut,
+        x: 0,
+        y: 0,
         duration: duration,
         opacity: 0,
-        onFinish() {
+        onFinish: () => {
           el[0].tween.reset()
         },
       })
@@ -181,20 +197,17 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
         node: el[0],
         duration: duration,
         opacity: 1,
-      })
-
-      el[0].tween.play()
+      }).play()
     },
 
     typewriting: (el, duration) => {
       !duration && (duration = 10)
 
-      if (el[0].attrs.name != "text") return
+      if (el[0].attrs.name !== "textLayer") return
 
       const textValue = el[0].getText()
 
       let i = 0
-
       const typeWriter = () => {
         if (i <= textValue.length) {
           el[0].setAttrs({
@@ -202,20 +215,20 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
           })
           layer.draw()
           i++
-          setTimeout(typeWriter, 50)
+          setTimeout(typeWriter, 100)
         }
       }
       typeWriter()
     },
 
     fallingAndBouncing: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 15)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
 
       el[0].position({
-        x: stage.width() / 2,
+        x: 0,
         y: 0,
       })
       el[0].opacity(0)
@@ -233,7 +246,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
     },
 
     twistyFallingAndBouncing: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 20)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -397,7 +410,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
     },
 
     twistyRotatedRightToTheLeft: (el, duration) => {
-      !duration && (duration = 18)
+      !duration && (duration = 23)
 
       let initX = el[0].attrs.x
       let initY = el[0].attrs.y
@@ -438,6 +451,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
       })
 
       el[0].rotate(30)
+      el[0].opacity(0)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
@@ -445,6 +459,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
         duration,
         scaleX: 1,
         scaleY: 1,
+        opacity: 1,
         rotation: 0,
       })
 
@@ -452,17 +467,19 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
     },
 
     centeredResizingOnTheMiddle: (el, duration) => {
-      !duration && (duration = 10)
+      !duration && (duration = 8)
 
       el[0].scale({
         x: 0,
         y: 0,
       })
+      el[0].opacity(0)
 
       el[0].tween = new Konva.Tween({
         node: el[0],
         easing: Konva.Easings.BackEaseOut,
         duration,
+        opacity: 1,
         scaleX: 1,
         scaleY: 1,
       })
@@ -486,6 +503,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
       el[0].tween = new Konva.Tween({
         node: el[0],
         x: initX,
+        y: initY,
         easing: Konva.Easings.StrongEaseOut,
         duration,
         opacity: 1,
@@ -496,9 +514,10 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
   }
 
   const itemType = {
-    textLayer: (layerData) => {  
-      console.log("text",layerData.meta.value)
+    textLayer: (layerData,EFFECTS) => {
       const FONT_SIZE = parseInt(layerData.meta.fontSize)
+      const randomEffect = layerEffects(EFFECTS) 
+
       let el = new Konva.Text({
         width: layerData.dimentions.width,
         height: layerData.dimentions.height,
@@ -507,7 +526,7 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
         text: layerData.meta.value,
         fontSize: FONT_SIZE,
         fontFamily: layerData.meta.fontFamily,
-        fill: "red", //txtLayersData.meta.color,// berel
+        fill: layerData.meta.color.solid.color, //txtLayersData.meta.color,// berel
         opacity: layerData.opacity,
         name: "textLayer",
       })
@@ -519,53 +538,52 @@ const rendLayersEffect = async (stage, layer, EFFECTS, layersDataArr) => {
       })
       layer.add(el)
       layer.draw()
+
+      animationType[randomEffect](stage.find("." + "textLayer"))
     },
-    image: (layerData) => {
-      console.log("image",layerData.meta.value)
+    image: (layerData, EFFECTS) => {
+
       let imgUrl = layerData.meta.value
 
-      let el = Konva.Image.fromURL(imgUrl, (el) => {
+    //  console.log("imgUrl",imgUrl)
+    //  console.log("layerData", layerData)
+
+
+      const randomEffect = layerEffects(EFFECTS)      
+
+      Konva.Image.fromURL(imgUrl, (el) => {
         el.setAttrs({
           width: layerData.dimentions.width,
           height: layerData.dimentions.height,
           x: layerData.dimentions.coords.x,
           y: layerData.dimentions.coords.y,
-          name: "image",
+          name: `image-${layerData.id}`,
           order: layerData.order,
         })
-
         layer.add(el)
         layer.batchDraw()
         el.setAttr("offset", {
           x: 0,
           y: 0,
         })
+
+        animationType[randomEffect](stage.find("." + `image-${layerData.id}`))
       })
     },
   }
 
-  const randomEffect = EFFECTS[Math.floor(Math.random() * EFFECTS.length)]
-
   layersDataArr.forEach((layerData) => {
-
     if (layerData.type === "TEXT_LAYER") {
-      itemType["textLayer"](layerData)
-      animationType[randomEffect](stage.find("." + "textLayer"))
+      itemType["textLayer"](layerData,EFFECTS)      
     }
 
     if (
       layerData.type === "IMAGE_LAYER" &&
       layerData.placeholder.type !== "Background"
     ) {
-      itemType["image"](layerData)
-      animationType[randomEffect](stage.find("." + "image"))
+      itemType["image"](layerData, EFFECTS)
     }
-    
   })
-
-  //To select shapes by name with "image", we can use the find() method using the . selector.
-  // The find() method returns an array of nodes that match the selector string.
-  // animationType[textRandomEffect](stage.find("." + "textLayer"))
 }
 
 const rendVideo = async ({ outputDir, output }) => {
@@ -579,12 +597,13 @@ const rendVideo = async ({ outputDir, output }) => {
 
   const start = Date.now()
 
-  const frames = 5 * videoFps
+  // const frames = layersDataArr.length * videoFps
+  const frames = 3 * videoFps
 
-  let layer = new Konva.Layer({})
-  let group = new Konva.Group({ clip: data.frameGroup })
-  let image = new Konva.Image({ draggable: false })
-  let fadeImage = null
+  const layer = new Konva.Layer({})
+  const group = new Konva.Group({})
+  const image = new Konva.Image({ draggable: false })
+  const fadeImage = null
 
   const backgroundLayerData = layersDataArr.find((templateLayers) => {
     return templateLayers.placeholder.type === "Background"
@@ -594,9 +613,23 @@ const rendVideo = async ({ outputDir, output }) => {
   let imageObj = await loadImage(backgroundLayerData.meta.value)
   stage.add(layer)
 
+  // const backgroundData = {
+  //   img:image,
+
+  // }
+
   const animate = combineAnimations(
+    rendBackground(
+      image,
+      imageObj,
+      group,
+      fadeImage,
+      layer,
+      canvasSize,
+      canvasCoords
+    ),
+
     // Use the html image object to load the image and handle when laoded.
-    rendBackground(image, imageObj, group, fadeImage, layer, canvasSize,canvasCoords),
     await rendLayersEffect(stage, layer, EFFECTS, layersDataArr)
   )
 
