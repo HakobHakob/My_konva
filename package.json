@@ -28,6 +28,7 @@
     "execa": "^5.0.0",
     "jsdom": "^20.0.3",
     "konva": "^7.2.5",
-    "konva-node": "^0.11.2"
+    "konva-node": "^0.11.2",
+    "promise-each": "^2.2.0"
   }
 }

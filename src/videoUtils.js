@@ -1,6 +1,7 @@
 const fs = require("fs")
 const path = require("path")
 const execa = require("execa")
+const {txtEffects,imgEffects} = require("./consts")
 
  //To select shapes by name with "image", we can use the find() method using the . selector.
   // The find() method returns an array of nodes that match the selector string.
@@ -8,8 +9,19 @@ const execa = require("execa")
 
 const frameNameLength = 5
 
-const layerEffects = (EFFECTS) => {
-  return EFFECTS[Math.floor(Math.random() * EFFECTS.length)]
+
+
+const layerEffects = (layerData) => { 
+
+  if(layerData.type === "TEXT_LAYER"){
+    return txtEffects[Math.floor(Math.random() * txtEffects.length)]
+  } 
+
+  if(layerData.type === "IMAGE_LAYER"){
+    return imgEffects[Math.floor(Math.random() * imgEffects.length)]
+  }
+  return new Error(`Unsupported layer format: ${layerData.type}`)
+  
 }
 
 const combineAnimations = (...animations) => {  
