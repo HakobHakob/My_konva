@@ -4,7 +4,6 @@ const each = require("promise-each")
 const { loadImage } = require("canvas")
 const stateJson = require("./project.json")
 const layersDataArr = stateJson.layers.mainState.data
-
 const { videoFps, animationType } = require("./consts")
 
 const {
