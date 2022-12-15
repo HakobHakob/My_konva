@@ -4,6 +4,7 @@ const each = require("promise-each")
 const { loadImage } = require("canvas")
 const stateJson = require("./project.json")
 const layersDataArr = stateJson.layers.mainState.data
+
 const { videoFps, animationType } = require("./consts")
 
 const {
@@ -62,7 +63,8 @@ const addTextLayer = (konvaLayer, layerData) => {
       type: "TEXT_LAYER",
       name: `layer-${layerData.id}`,
     })
-    
+
+ 
     el.setAttr("offset", {
       x: 0,
       y: 0,

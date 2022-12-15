@@ -9,8 +9,6 @@ const {txtEffects,imgEffects} = require("./consts")
 
 const frameNameLength = 5
 
-
-
 const layerEffects = (layerData) => { 
 
   if(layerData.type === "TEXT_LAYER"){
