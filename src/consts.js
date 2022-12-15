@@ -1,458 +1,502 @@
-const EFFECTS = [
+const txtEffects = [
   "leftToRight",
-  // "rotateExitRight",
-  // "fadeInItem",
-  // "spellTowardsTheScreen",
-  // "shrinkToCanvas",
-  // "opacityFadeOut",
-  // "opacityFadeIn",
-  // "typewriting",
-  // "fallingAndBouncing",
-  // "twistyFallingAndBouncing",
-  // "backEasingMiddleToTop",
-  // "middleToTopAndRotateClassicNegative",
-  // "middleToTopAndRotateClassicPositive",
-  // "middleToTopAndRotateNegative",
-  // "middleToTopAndRotatePositive",
-  // "twistyRotatedRightToTheLeft",
-  // "centeredResizingAndRotationingOnTheMiddle",
-  // "centeredResizingOnTheMiddle",
-  // "easingRightToTheLeft",
+  "rotateExitRight",  
+  "typewriting",
+  "opacityFadeOut",
+  "fallingAndBouncing",  
+  "twistyRotatedRightToTheLeft",  
+  "easingRightToTheLeft",
 ]
 
-const data = {
-  frameGroup: {
-    x: 0,
-    y: 0,
-    width: 1080,
-    height: 1080,
+const imgEffects = [
+  "easingLeftToRight",
+  "shrinkToCanvas",
+  "middleToTopAndRotateClassicNegative",
+  "middleToTopAndRotateClassicPositive",
+  "middleToTopAndRotateNegative",    
+  "middleToTopAndRotatePositive",
+  "opacityFadeIn",
+  "centeredResizingAndRotationingOnTheMiddle",
+  "centeredResizingOnTheMiddle",
+  "twistyFallingAndBouncing",
+  "backEasingMiddleToTop", 
+]
+
+const animationType = {
+  leftToRight: (el, duration) => {
+    const layersAttributes = el.map((element) => {
+      return element["attrs"]
+    })
+
+    //get last element from array
+    const lastLayerData = layersAttributes.at(-1)
+
+    if (lastLayerData !== undefined) {
+      var initX = lastLayerData.x
+      var initY = lastLayerData.y
+    }
+
+    let time = duration
+    !time ? (time = 8) : (time = duration)
+
+    el.position({
+      x: -lastLayerData.width,
+      y: 0,
+    })
+
+    el.to({
+      x: initX,
+      y: initY,
+      duration: time,
+    })
   },
-  fadeImage: { opacity: 1 },
+
+  rotateExitRight: (el) => {
+    const layersAttributes = el.map((element) => {
+      return element["attrs"]
+    })
+    const lastLayerData = layersAttributes.at(-1)
+
+    if (lastLayerData !== undefined) {
+      var initX = lastLayerData.x
+      var initY = lastLayerData.y
+    }
+    let animSpeed = 0.4
+    let animInit = false
+
+    let animRotate = new Konva.Animation((frame) => {
+      el.rotation((frame.time * animSpeed) % 360)
+    }, el.konvaLayer)
+
+    let animMove = new Konva.Animation((frame) => {
+      initX
+      el.x((lastLayerData.width * 2) - frame.time / 10)
+    }, el.konvaLayer)
+
+    animInit = true
+    animRotate.start()
+    animMove.start()
+
+    setTimeout(() => {
+      animRotate.stop()
+      animMove.stop()
+      el.setAttrs({
+        x: initX,
+        y: initY,
+        rotation: 0,
+      })
+    }, 15000)
+  },
+
+  typewriting: (el, duration) => {
+    !duration && (duration = 10)
+
+    const id = el[0].attrs.layerData
+
+    if (el[0].attrs.type !== "TEXT_LAYER") return
+
+    const textValue = el[0].getText()
+
+    let i = 0
+    const typeWriter = () => {
+      if (i <= textValue.length) {
+        el[0].setAttrs({
+          text: textValue.substr(0, i),
+        })
+        i++
+        setTimeout(typeWriter, 400)
+      }
+    }
+    typeWriter()
+  },
+
+  opacityFadeOut: (el, duration) => {
+    !duration && (duration = 15)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].position({
+      x: initX,
+      y: initY,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.EaseOut,
+      x: initX,
+      y: initY,
+      duration: duration,
+      opacity: 0,
+      onFinish: () => {
+        el[0].tween.reset()
+      },
+    })
+
+    el[0].tween.play()
+  },
+
+  fallingAndBouncing: (el, duration) => {
+    !duration && (duration = 15)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].position({
+      x: 0,
+      y: 0,
+    })
+    el[0].opacity(0)
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.BounceEaseOut,
+      duration: duration,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  twistyRotatedRightToTheLeft: (el, duration) => {
+    !duration && (duration = 23)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(30)
+    el[0].opacity(0)
+    el[0].position({
+      x: el[0].attrs.width,
+      y: initY,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      easing: Konva.Easings.BackEaseOut,
+      duration,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.ElasticEaseOut,
+      duration: duration + 1.5,
+      rotation: 0,
+    })
+
+    el[0].tween.play()
+  },
+
+  easingRightToTheLeft: (el, duration) => {
+    !duration && (duration = 10)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].position({
+      x: el[0].attrs.width + el[0].attrs.x / 2,
+      y: el[0].attrs.height / 2,
+    })
+
+    el[0].opacity(0)
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.StrongEaseOut,
+      duration,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  easingLeftToRight: (el, duration) => {
+    !duration && (duration = 10)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el.position({
+      x: -el[0].attrs.x,
+      y: initY,
+    })
+
+    el.tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      easing: Konva.Easings.StrongEaseOut,
+      duration: duration,
+    })
+
+    el.tween.play()
+  },
+
+  shrinkToCanvas: (el, duration) => {
+    !duration && (duration = 20)
+
+    el[0].scale({
+      x: 12,
+      y: 12,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.StrongEaseOut,
+      duration: duration,
+      scaleX: 1,
+      scaleY: 1,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+  middleToTopAndRotateClassicNegative: (el, duration) => {
+    !duration && (duration = 15)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(-30)
+    el[0].opacity(0)
+
+    el[0].position({
+      x: el[0].attrs.width,
+      y: el[0].attrs.height,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.StrongEaseOut,
+      duration,
+      rotation: 0,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  middleToTopAndRotateClassicPositive: (el, duration) => {
+    !duration && (duration = 15)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(30)
+    el[0].opacity(0)
+
+    el[0].position({
+      x: el[0].attrs.width,
+      y: el[0].attrs.height,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.StrongEaseOut,
+      duration,
+      rotation: 0,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  middleToTopAndRotateNegative: (el, duration) => {
+    !duration && (duration = 24.5)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(-30)
+    el[0].opacity(0)
+
+    el[0].position({
+      x: el[0].attrs.width,
+      y: el[0].attrs.height,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.ElasticEaseOut,
+      duration,
+      rotation: 0,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  middleToTopAndRotatePositive: (el, duration) => {
+    !duration && (duration = 24.5)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(30)
+    el[0].opacity(0)
+
+    el[0].position({
+      x: el[0].attrs.width,
+      y: el[0].attrs.height,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.ElasticEaseOut,
+      duration,
+      rotation: 0,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  opacityFadeIn: (el, duration) => {
+    !duration && (duration = 10)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].position({
+      x: el[0].attrs.width,
+      y: el[0].attrs.height,
+    })
+
+    el[0].opacity(0)
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      duration: duration,
+      opacity: 1,
+    }).play()
+  },
+
+  centeredResizingAndRotationingOnTheMiddle: (el, duration) => {
+    !duration && (duration = 10)
+
+    el[0].scale({
+      x: 0,
+      y: 0,
+    })
+
+    el[0].rotate(30)
+    el[0].opacity(0)
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.BackEaseOut,
+      duration,
+      scaleX: 1,
+      scaleY: 1,
+      opacity: 1,
+      rotation: 0,
+    })
+
+    el[0].tween.play()
+  },
+
+  centeredResizingOnTheMiddle: (el, duration) => {
+    !duration && (duration = 8)
+
+    el[0].scale({
+      x: 0,
+      y: 0,
+    })
+    el[0].opacity(0)
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.BackEaseOut,
+      duration,
+      opacity: 1,
+      scaleX: 1,
+      scaleY: 1,
+    })
+
+    el[0].tween.play()
+  },
+
+  twistyFallingAndBouncing: (el, duration) => {
+    !duration && (duration = 20)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].rotate(-30)
+    el[0].opacity(0)
+    el[0].position({
+      x: el[0].attrs.width / 2,
+      y: 0,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.BounceEaseOut,
+      duration,
+      opacity: 1,
+    })
+
+    el[0].tween.play()
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      easing: Konva.Easings.EaseInOut,
+      duration: duration,
+      rotation: 0,
+    })
+
+    el[0].tween.play()
+  },
+
+  backEasingMiddleToTop: (el, duration) => {
+    !duration && (duration = 10)
+
+    let initX = el[0].attrs.x
+    let initY = el[0].attrs.y
+
+    el[0].position({
+      x: el[0].attrs.width / 2,
+      y: el[0].attrs.height,
+    })
+
+    el[0].tween = new Konva.Tween({
+      node: el[0],
+      x: initX,
+      y: initY,
+      easing: Konva.Easings.BackEaseOut,
+      duration,
+    })
+
+    el[0].tween.play()
+  },
 }
 
-const templateWidth = 1080
-const templateHeight = 1080
-const videoFps = 25 // 1 vayrkyanum kadreri qanak
-
-const layersArr = [  
-  {
-    id: 46625,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://static.essemem.com/file-manager/6385a6d43d38e.jpg',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 2,
-    title: 'Frame-79-(1)-min',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 1080,
-      coords: [Object],
-      height: 1080,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 430,
-      originalHeight: 430
-    },
-    visibility: true,
-    placeholder: { type: 'Background', layerId: '', placement: 'fill' },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46631,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://uf-2022.essemem.com/%22%22%2C3d3ecaa6-f011-4c89-9-flowerlogo.jpg',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 8,
-    title: 'Image-placeholder',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 184,
-      coords: [Object],
-      height: 123,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 200,
-      originalHeight: 200
-    },
-    visibility: true,
-    placeholder: { type: 'Logo', layerId: '', placement: 'fit', isReplaced: true },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46632,
-    flip: { h: false, v: false },
-    meta: {
-      color: [Object],
-      value: [ 'Text Effect' ],
-      fontId: '535',
-      stroke: [Object],
-      padding: [Array],
-      fontSize: '54',
-      fontStyle: 'regular',
-      fontFamily: 'Lobster',
-      fontWeight: '400',
-      lineHeight: 1.1,
-      letterSpacing: 0,
-      backgroundColor: [Object],
-      horizontalAlign: 'center'
-    },
-    type: 'TEXT_LAYER',
-    order: 9,
-    title: 'Dollar S...',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#ff00fb',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 742,
-      coords: { x: 168, y: 63 },
-      height: 118.797,
-      maxWidth: 742,
-      rotation: 0,
-      originalWidth: 510,
-      originalHeight: 99,
-      cropInfo: { width: 742, height: 119, x: 0, y: 0 }
-    },
-    visibility: true,
-    placeholder: { type: 'Title', layerId: '', placement: 'fill', isReplaced: true },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 98004,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://uf-2022.essemem.com/%22%22%2C5d900123-3c11-48f0-a-flower.jpg',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 11,
-    title: 'Image-placeholder',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 709,
-      coords: [Object],
-      height: 838,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 200,
-      originalHeight: 200
-    },
-    visibility: true,
-    placeholder: { type: 'Image', layerId: '', placement: 'fill', isReplaced: true },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46630,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://static.essemem.com/file-manager/6385a7ac79e3e.png',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 12,
-    title: 'Asset-2@2x-13-min',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 361,
-      coords: [Object],
-      height: 271,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 361,
-      originalHeight: 271
-    },
-    visibility: true,
-    placeholder: { type: '', layerId: '', placement: 'fill' },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46628,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://static.essemem.com/file-manager/6385a74c043d6.png',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 13,
-    title: 'Asset-2@2x-14-min',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 696,
-      coords: [Object],
-      height: 215,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 430,
-      originalHeight: 133
-    },
-    visibility: true,
-    placeholder: { type: '', layerId: '', placement: 'fill' },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46629,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://static.essemem.com/file-manager/6385a793a3608.png',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 14,
-    title: 'Asset-1@2x-9-min',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 455,
-      coords: [Object],
-      height: 310,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 430,
-      originalHeight: 293
-    },
-    visibility: true,
-    placeholder: { type: '', layerId: '', placement: 'fill' },
-    parentLayerId: '',
-    relativePosition: ''
-  },
-  {
-    id: 46627,
-    flip: { h: false, v: false },
-    meta: {
-      type: 'ImgType',
-      value: 'https://static.essemem.com/file-manager/6385a7276f969.png',
-      colorAdjustments: [Object]
-    },
-    type: 'IMAGE_LAYER',
-    order: 15,
-    title: 'Asset-3@2x-17-min',
-    border: {
-      type: '',
-      solid: [Object],
-      width: 20,
-      gradient: [Object],
-      position: 'inside'
-    },
-    shadow: {
-      blur: 0,
-      color: '#3b3939',
-      spread: 0,
-      distance: 0,
-      direction: 0,
-      isEnabled: false
-    },
-    movable: true,
-    opacity: 1,
-    constrains: {
-      movable: true,
-      draggable: true,
-      placement: '',
-      resizable: true,
-      rotatable: true,
-      selection: true
-    },
-    dimentions: {
-      width: 811,
-      coords: [Object],
-      height: 226,
-      cropInfo: [Object],
-      rotation: 0,
-      originalWidth: 430,
-      originalHeight: 120
-    },
-    visibility: true,
-    placeholder: { type: '', layerId: '', placement: 'fill' },
-    parentLayerId: '',
-    relativePosition: ''
-  }
-]
-
-
+const videoFps = 25 // Number of frames per second
 
 module.exports = { 
-  EFFECTS,
-  data,
-  templateWidth,
-  templateHeight,
+  animationType,
+  txtEffects,
+  imgEffects,
   videoFps,
 }
+
+
+

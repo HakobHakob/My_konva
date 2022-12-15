@@ -1,30 +1,28 @@
 const fs = require("fs")
 const path = require("path")
 const execa = require("execa")
-// const Konva = require("konva")
+const {txtEffects,imgEffects} = require("./consts")
+
+ //To select shapes by name with "image", we can use the find() method using the . selector.
+  // The find() method returns an array of nodes that match the selector string.
+  // animationType[textRandomEffect](stage.find("." + "textLayer"))
 
 const frameNameLength = 5
 
-// const loadKonvaImage = (url) => {
-//   return new Promise((res) => {
-//     Konva.Image.fromURL(url, res)
-//   })
-// }
+const layerEffects = (layerData) => { 
 
-// const loadBackgroundImage = (filename) => {
-//   return loadKonvaImage(path.join(__dirname, "../assets", filename))
-// }
+  if(layerData.type === "TEXT_LAYER"){
+    return txtEffects[Math.floor(Math.random() * txtEffects.length)]
+  } 
 
-// const makeAnimation = ( callback,{ startFrame, duration }) => {
-//   return (frame) => {   
-//     const thisFrame = frame - startFrame
-//     if (thisFrame > 0 && thisFrame <= duration) {
-//       callback(thisFrame / duration)
-//     }
-//   }
-// }
+  if(layerData.type === "IMAGE_LAYER"){
+    return imgEffects[Math.floor(Math.random() * imgEffects.length)]
+  }
+  return new Error(`Unsupported layer format: ${layerData.type}`)
+  
+}
 
-const combineAnimations = (...animations) => {
+const combineAnimations = (...animations) => {  
   return (frame) => {
     for (const animation of animations) {
       if (animation) {
@@ -68,9 +66,8 @@ const createVideo = ({ fps, outputDir, output }) => {
 }
 
 module.exports = {
-  // loadBackgroundImage,
-  // makeAnimation,
   combineAnimations,
   saveFrame,
+  layerEffects,
   createVideo
 }
